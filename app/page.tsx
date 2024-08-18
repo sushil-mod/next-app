@@ -1,8 +1,7 @@
+import { Signup } from "@/components/Signup";
 
 export default function Home() {
   return (
-    <div>
-      this is a next website
-    </div>
+   <Signup/>
   );
 }
