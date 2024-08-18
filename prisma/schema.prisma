@@ -18,6 +18,8 @@ model User {
   username  String @unique
   password  String
   storyIdea storyIdea[]
+
+  storyUpvote storyUpvote[]
 }
 
 model storyIdea {
@@ -26,5 +28,17 @@ model storyIdea {
   title       String
   description String
   user        User     @relation(fields: [user_id], references: [id])
+
+  storyUpvote storyUpvote[]
 }
 
+model storyUpvote {
+  id        Int      @id @default(autoincrement())
+  story_id  Int
+  user_id   Int
+  upvote    Boolean
+  user      User     @relation(fields: [user_id], references: [id])
+  story     storyIdea @relation(fields: [story_id], references: [id])
+
+  @@unique([story_id, user_id])
+}

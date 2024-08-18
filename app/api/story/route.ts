@@ -6,22 +6,63 @@ const prisma = new PrismaClient();
 const secret = process.env.JWT_SECRET;
 
 export async function GET(req: NextRequest) {
-  const token = req.headers.get('Authorization');
-    console.log("token",token);
-  if (!token) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
+    try {
+      const token = req.headers.get('authorization');
+      if (!token) {
+        return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      }
+  
+      const decoded = jwt.verify(token, secret!) as { id: number };
 
-  try {
-    // Verify the JWT token
-    jwt.verify(token, secret!);
-
-    // Fetch all stories
-    const stories = await prisma.storyIdea.findMany();
-
-    return NextResponse.json({ stories });
-  } catch (error) {
-    console.error("Error fetching stories:", error);
-    return NextResponse.json({ message: "Invalid token or server error" }, { status: 401 });
-  }
+      const stories = await prisma.storyIdea.findMany({
+        include: {
+          storyUpvote: true,
+        },
+      });
+  
+      const formattedStories = stories.map((story) => {
+        const upvoteCount = story.storyUpvote.filter(upvote => upvote.upvote).length;
+        const isUserUpvote = story.storyUpvote.some(upvote => upvote.user_id === decoded.id && upvote.upvote);
+  
+        return {
+          id: story.id,
+          user_id: story.user_id,
+          title: story.title,
+          description: story.description,
+          storyUpvote: upvoteCount,
+          isUserUpvote: isUserUpvote || false,
+        };
+      });
+  
+      return NextResponse.json({ stories: formattedStories });
+    } catch (error) {
+      console.error("Error fetching stories:", error);
+      return NextResponse.json({ message: "Error fetching stories" }, { status: 500 });
+    }
 }
+
+export async function POST(req: NextRequest) {
+    try {
+      const token = req.headers.get('authorization');
+      if (!token) {
+        return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      }
+
+      const decoded = jwt.verify(token, secret!) as { id: number };
+  
+      const { title, description } = await req.json();
+  
+      const newStory = await prisma.storyIdea.create({
+        data: {
+          user_id: decoded.id,
+          title,
+          description,
+        },
+      });
+  
+      return NextResponse.json({ message: "Story added successfully", story: newStory });
+    } catch (error) {
+      console.error("Error adding story:", error);
+      return NextResponse.json({ message: "Error adding story" }, { status: 500 });
+    }
+  }
