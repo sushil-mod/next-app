@@ -145,11 +145,12 @@ export function StoryIdeas (){
                     </form>
              
             </div>
+            <div className="w-3/5 ml-auto mr-auto border-t-2 border-gray-200 my-3"></div>
             <div className=" w-3/5 ml-auto mr-auto flex flex-col p-4 gap-2 flex-grow overflow-y-auto custom-scrollbar">
 
                 {
                     stories?.map((item : any) => 
-                        <div className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm flex justify-between items-center">
+                        <div key={item?.id} className="border border-gray-300 rounded-lg p-4 bg-white shadow-sm flex justify-between items-center">
                     <div>
                       <p className="text-lg font-semibold text-gray-800">{item?.title}</p>
                       <p className="text-gray-600">{item?.description}</p>

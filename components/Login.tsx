@@ -3,18 +3,18 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { ChangeEventHandler, useState } from "react";
 
-export function Signup() {
+export function Login() {
     const router = useRouter()
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const signupHandler = async () => {
+    const loginHandler = async () => {
         try {
-            const response =  await axios.post("http://localhost:3000/api/signup",{username,password});
+            const response =  await axios.post("http://localhost:3000/api/login",{username,password});
             console.log("repsonse",response.data);
-            if(response.data?.statusCode === 201){
-                let token = response?.data?.data?.token;
+            if(response.data?.statusCode === 200){
+                let token = response?.data?.token;
                 localStorage.setItem("encodedToken",token);
                 router.push("/story-ideas");
             }
@@ -29,7 +29,7 @@ export function Signup() {
                 <div>
                     <div className="px-10">
                         <div className="text-3xl font-extrabold">
-                            Sign up
+                            Login
                         </div>
                     </div>
                     <div className="pt-2">
@@ -40,15 +40,15 @@ export function Signup() {
                             setPassword(e.target.value)
                         }} label="Password" type={"password"} placeholder="******" />
                         <button
-                            onClick={async()=>signupHandler()}
-                        type="button" className="mt-8 w-full text-white bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Sign up</button>
-                         <div className="text-center mt-4 flex">
+                            onClick={async()=>loginHandler()}
+                        type="button" className="mt-8 w-full text-white bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">submit</button>
+                        <div className="text-center mt-4 flex">
                             <hr className="border-gray-300 my-4" />
                             <p className="text-sm text-gray-600">
-                                Already have an account?{" "}
+                                Don't have an account?{" "}
                             </p>
-                            <p onClick={() => router.push("/")} className="text-center text-sm text-blue-600 hover:underline cursor-pointer">
-                                    Sign in
+                            <p onClick={() => router.push("/signup")} className="text-center text-sm text-blue-600 hover:underline cursor-pointer">
+                                    Sign up
                             </p>
                         </div>
                     </div>
