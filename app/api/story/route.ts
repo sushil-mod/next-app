@@ -52,6 +52,30 @@ export async function POST(req: NextRequest) {
   
       const { title, description } = await req.json();
   
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const endOfDay = new Date(today);
+      endOfDay.setHours(23, 59, 59, 999);
+      
+      const storyCountToday = await prisma.storyIdea.count({
+        where: {
+          user_id: decoded.id,
+          createdAt: {
+            gte: today,
+            lte: endOfDay,
+          },
+        },
+      });
+
+      if (storyCountToday >= 2) {
+        const nextAllowedTime = new Date(endOfDay).getTime() - Date.now();
+        return NextResponse.json({
+          message: "Daily limit reached",
+          nextAllowedTime: nextAllowedTime,
+        }, { status: 201 });
+      }
+
       const newStory = await prisma.storyIdea.create({
         data: {
           user_id: decoded.id,

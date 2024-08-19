@@ -5,7 +5,9 @@ import { ArrowBigUp } from 'lucide-react';
 import axios from "axios";
 
 export function StoryIdeas (){
-    
+  
+    const [popupMessage, setPopupMessage] = useState("");
+    const [showPopup, setShowPopup] = useState(false);
     const [stories,setStories] = useState([]);
     let token = localStorage.getItem("encodedToken");
 
@@ -38,6 +40,12 @@ export function StoryIdeas (){
             setStories(modifiedArray);
             setDescription("");
             setTitle("");
+        }else if (response.status === 201) {
+            const nextAllowedTime = response.data.nextAllowedTime;
+            const hours = Math.floor(nextAllowedTime / 3600000);
+            const minutes = Math.floor((nextAllowedTime % 3600000) / 60000);
+            setPopupMessage(`Daily limit reached. Try again in ${hours}h ${minutes}m`);
+            setShowPopup(true);
         }
         
       } catch (error) {
@@ -143,7 +151,7 @@ export function StoryIdeas (){
                         </div>
                         <Button type="submit" variant="outline" className="w-fullfont-semibold py-2 px-4 rounded-lg border-black">Submit</Button>
                     </form>
-             
+                  
             </div>
             <div className="w-3/5 ml-auto mr-auto border-t-2 border-gray-200 my-3"></div>
             <div className=" w-3/5 ml-auto mr-auto flex flex-col p-4 gap-2 flex-grow overflow-y-auto custom-scrollbar">
@@ -169,6 +177,14 @@ export function StoryIdeas (){
                 }
 
             </div>
+            {showPopup && (
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+                    <div className="bg-white p-4 rounded-lg shadow-lg">
+                        <p className="text-lg font-semibold text-gray-800">{popupMessage}</p>
+                        <button onClick={() => setShowPopup(false)} className="mt-4 text-blue-600 hover:underline">Close</button>
+                    </div>
+                </div>
+            )}
         </div>
         <style jsx>{`
             .custom-scrollbar::-webkit-scrollbar {
