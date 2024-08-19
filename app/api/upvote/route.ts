@@ -44,8 +44,14 @@ export async function POST(req: NextRequest) {
         },
       });
     }
+    const upvoteCount = await prisma.storyUpvote.count({
+      where: {
+        story_id,
+        upvote: true,
+      },
+    });
 
-    return NextResponse.json({ message: "Upvote status updated successfully", upvote: upvoteRecord });
+    return NextResponse.json({ message: "Upvote status updated successfully", upvote: upvoteRecord,upvoteCount });
   } catch (error) {
     console.error("Error updating upvote status:", error);
     return NextResponse.json({ message: "Error updating upvote status" }, { status: 500 });

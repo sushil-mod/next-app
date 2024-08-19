@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
+const secret = process.env.JWT_SECRET as string;
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,11 +22,8 @@ export async function POST(req: NextRequest) {
         message: "Username already exists",
       }, { status: 409 });
     }
-
-    // Hash the password before saving to the database
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create the new user
     const newUser = await prisma.user.create({
       data: {
         username,
@@ -32,12 +31,15 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    const token = jwt.sign({ username, id: newUser.id }, secret, { expiresIn: '4h' });
+
     return NextResponse.json({
       statusCode: 201,
       message: "User registered successfully",
       data: {
         id: newUser.id,
         username: newUser.username,
+        token
       },
     }, { status: 201 });
   } catch (error) {
