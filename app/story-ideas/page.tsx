@@ -2,7 +2,7 @@ import { StoryIdeas } from "@/components/StoryIdeas";
 
 
 
-export default async function () {
+export default async function storyIdeas () {
     
     return (<div>
         <StoryIdeas/>
