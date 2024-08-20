@@ -45,7 +45,7 @@ export function Login() {
                         <div className="text-center mt-4 flex">
                             <hr className="border-gray-300 my-4" />
                             <p className="text-sm text-gray-600">
-                                Don't have an account?
+                            Don&apos;t have an account?
                             </p>
                             <p onClick={() => router.push("/signup")} className="text-center text-sm text-blue-600 hover:underline cursor-pointer">
                                     Sign up
