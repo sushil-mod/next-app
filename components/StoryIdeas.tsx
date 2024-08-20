@@ -20,7 +20,7 @@ export function StoryIdeas (){
       e.preventDefault();
       
       try {
-        const response = await axios.post("http://localhost:3000/api/story", {
+        const response = await axios.post("https://next-app-tau-puce.vercel.app/api/story", {
           title,
           description,
         },
@@ -58,7 +58,7 @@ export function StoryIdeas (){
     const getStoryIdeas = async () => {
        
         try {
-            const response = await axios.get("http://localhost:3000/api/story", {
+            const response = await axios.get("https://next-app-tau-puce.vercel.app/api/story", {
                 headers: {
                     Authorization: token
                 }
@@ -76,7 +76,7 @@ export function StoryIdeas (){
     const upvoteHandler = async (story_id: any,upvote: any) => {
         console.log(story_id,upvote);
         try {
-            const response = await axios.post("http://localhost:3000/api/upvote",{story_id,upvote:!upvote},
+            const response = await axios.post("https://next-app-tau-puce.vercel.app/api/upvote",{story_id,upvote:!upvote},
                 {
                     headers: {
                         Authorization: token

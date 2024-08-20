@@ -11,7 +11,7 @@ export function Signup() {
 
     const signupHandler = async () => {
         try {
-            const response =  await axios.post("http://localhost:3000/api/signup",{username,password});
+            const response =  await axios.post("https://next-app-tau-puce.vercel.app/api/signup",{username,password});
             console.log("repsonse",response.data);
             if(response.data?.statusCode === 201){
                 let token = response?.data?.data?.token;
