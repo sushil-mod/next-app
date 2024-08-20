@@ -9,8 +9,10 @@ export function StoryIdeas (){
     const [popupMessage, setPopupMessage] = useState("");
     const [showPopup, setShowPopup] = useState(false);
     const [stories,setStories] = useState([]);
-    let token = localStorage.getItem("encodedToken");
-
+    let token : any = "";
+    if (typeof window !== "undefined") {    
+      token = localStorage.getItem("encodedToken");
+    }
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
   
